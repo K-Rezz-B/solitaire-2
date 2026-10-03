@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f2e35">
+  <meta name="description" content="Solitaire Klondike gratuit, sans compte, jouable hors ligne sur téléphone et ordinateur.">
+  <title>Solitaire</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Instrument+Sans:wght@400;600&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="bar">
+    <h1 class="brand">Solitaire</h1>
+
+    <dl class="hud">
+      <div><dt>Temps</dt><dd id="time">0:00</dd></div>
+      <div><dt>Coups</dt><dd id="moves">0</dd></div>
+      <div><dt>Score</dt><dd id="score">0</dd></div>
+    </dl>
+
+    <nav class="actions">
+      <button id="btn-undo" type="button" title="Annuler (Ctrl+Z)" aria-label="Annuler le dernier coup">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+        <span>Annuler</span>
+      </button>
+      <button id="btn-new" type="button" aria-label="Nouvelle partie">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M12 9v6M9 12h6"/></svg>
+        <span>Nouvelle</span>
+      </button>
+      <button id="btn-menu" type="button" aria-label="Options et statistiques">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main id="board" class="board" aria-label="Table de jeu"></main>
+
+  <dialog id="dlg-menu" aria-labelledby="menu-title">
+    <h2 id="menu-title">Options</h2>
+    <fieldset>
+      <legend>Pioche</legend>
+      <label><input type="radio" name="draw" value="1"> 1 carte</label>
+      <label><input type="radio" name="draw" value="3"> 3 cartes</label>
+      <p class="hint">Appliqué à la prochaine partie.</p>
+    </fieldset>
+
+    <h2>Statistiques</h2>
+    <dl class="stats">
+      <dt>Parties jouées</dt><dd id="st-played"></dd>
+      <dt>Victoires</dt><dd id="st-won"></dd>
+      <dt>Meilleur temps</dt><dd id="st-time"></dd>
+      <dt>Meilleur score</dt><dd id="st-score"></dd>
+      <dt>Série en cours</dt><dd id="st-streak"></dd>
+    </dl>
+    <p class="hint">Données enregistrées uniquement sur cet appareil.</p>
+
+    <div class="dlg-actions">
+      <button id="btn-reset-stats" type="button" class="ghost">Effacer les statistiques</button>
+      <button type="button" class="primary" data-close>Fermer</button>
+    </div>
+  </dialog>
+
+  <dialog id="dlg-win" aria-labelledby="win-title">
+    <h2 id="win-title">Partie gagnée</h2>
+    <dl class="stats">
+      <dt>Temps</dt><dd id="win-time"></dd>
+      <dt>Coups</dt><dd id="win-moves"></dd>
+      <dt>Score</dt><dd id="win-score"></dd>
+    </dl>
+    <div class="dlg-actions">
+      <button type="button" class="ghost" data-close>Voir la table</button>
+      <button id="btn-replay" type="button" class="primary" autofocus>Rejouer</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

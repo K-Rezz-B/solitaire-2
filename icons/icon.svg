@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#17414a"/>
+  <rect x="140" y="96" width="215" height="300" rx="20" fill="#6e1e2a" stroke="#fbf7ee" stroke-width="11" transform="rotate(12 256 256)"/>
+  <g transform="rotate(-8 256 256)">
+    <rect x="156" y="106" width="215" height="300" rx="20" fill="#fbf7ee"/>
+    <text x="263" y="320" font-family="Georgia, serif" font-size="170" fill="#1e1b18" text-anchor="middle">♠</text>
+  </g>
+</svg>
