@@ -8,6 +8,8 @@ Klondike en HTML/CSS/JS natif. Aucun build, aucun compte, aucune dépendance.
 - Pioche 1 ou 3 cartes, annulation illimitée (Ctrl+Z), fin de partie automatique
 - Sauvegarde auto de la partie et des stats dans `localStorage`
 - PWA : installable sur l'écran d'accueil, jouable hors ligne
+- **Paysage imposé sur mobile** : verrouillage natif sur Android (plein écran), rotation CSS de l'interface sur iPhone
+- **Lisibilité** : disposition latérale en paysage (cartes ~70 % plus grandes), grands chiffres, option 4 couleurs
 
 ## Lancer en local
 ```bash

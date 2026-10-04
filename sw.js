@@ -1,5 +1,5 @@
 // Service worker : jeu jouable hors ligne. Incrémenter VERSION à chaque déploiement modifiant les assets.
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE = `solitaire-${VERSION}`;
 const ASSETS = [
   '/', '/index.html', '/css/style.css',

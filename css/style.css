@@ -13,22 +13,41 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html, body { height: 100%; margin: 0; }
-
-body {
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
+html, body {
   overflow: hidden;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   font-family: var(--sans);
   color: var(--ivory);
   background:
     radial-gradient(ellipse 90% 70% at 50% 35%, var(--felt-light) 0%, var(--felt) 55%, var(--felt-deep) 100%)
-    fixed;
+    fixed var(--felt);
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   -webkit-user-select: none;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100dvh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Téléphone/tablette tenu en portrait : toute l'interface pivote de 90° pour imposer le paysage.
+   Indispensable sur iPhone où screen.orientation.lock() n'existe pas (pas d'API plein écran).
+   ⚠ Media query dupliquée dans app.js (ROTATED_MQ) pour convertir les gestes. */
+@media (orientation: portrait) and (pointer: coarse) {
+  #app {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvh;
+    height: 100dvw;
+    transform-origin: top left;
+    transform: rotate(90deg) translateY(-100%);
+    /* Les marges de sécurité suivent la rotation : haut de l'écran = gauche de l'app, etc. */
+    padding: env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) env(safe-area-inset-top);
+  }
 }
 
 /* ---------- Barre ---------- */
@@ -37,10 +56,18 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
-  max-width: 980px;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
   padding: 0.6rem clamp(0.5rem, 2vw, 1.25rem);
+}
+
+/* Paysage court (téléphone) : barre compacte pour laisser la hauteur aux cartes */
+@media (max-height: 500px), (orientation: portrait) and (pointer: coarse) {
+  .bar { padding-top: 4px; padding-bottom: 0; }
+  .brand { font-size: 1.2rem; }
+  .hud dt { font-size: 0.65rem; }
+  .actions button { min-height: 44px; min-width: 44px; }
 }
 
 .brand {
@@ -111,7 +138,7 @@ button {
   position: relative;
   flex: 1;
   width: 100%;
-  max-width: 980px;
+  max-width: 1200px;
   margin: 0 auto;
   overflow: hidden;
   touch-action: none; /* le navigateur ne doit ni scroller ni zoomer pendant un glisser */
@@ -148,6 +175,9 @@ button {
   color: rgba(200, 164, 77, 0.7);
 }
 .slot-waste { border-color: transparent; background: none; }
+/* Fondations empilées (mode côté) : le repère « A » dans la bande visible */
+.board.side .slot-foundation { place-items: start center; background: var(--felt); }
+.board.side .slot-foundation::after { margin-top: calc(var(--cw) * 0.02); font-size: calc(var(--cw) * 0.32); }
 
 /* ---------- Cartes ---------- */
 
@@ -177,6 +207,7 @@ button {
   -webkit-backface-visibility: hidden;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.18);
 }
+.card.buried .face { box-shadow: none; }
 .card.dragging .face { box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4); }
 
 .front {
@@ -241,11 +272,29 @@ button {
 .board.no-anim .card,
 .board.no-anim .inner { transition: none !important; }
 
+/* ---------- Grande lisibilité ---------- */
+
+.big .idx { top: calc(var(--cw) * 0.03); left: calc(var(--cw) * 0.06); right: calc(var(--cw) * 0.06); }
+.big .idx b { font-size: calc(var(--cw) * 0.42); letter-spacing: -0.06em; }
+.big .idx i { font-size: calc(var(--cw) * 0.36); }
+.big .pip { font-size: calc(var(--cw) * 0.5); bottom: 8%; }
+.big .court { font-size: calc(var(--cw) * 0.56); bottom: 6%; }
+.big .front { box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.28), 0 1px 3px rgba(0, 0, 0, 0.45); }
+.big .slot { border-color: rgba(251, 247, 238, 0.3); }
+.big .slot::after { color: rgba(251, 247, 238, 0.28); }
+
+/* 4 couleurs : distinguer les enseignes sans dépendre de la forme du symbole */
+.four-color .card.suit-D .front { color: #1d5fc4; }
+.four-color .card.suit-C .front { color: #17793a; }
+
 /* ---------- Dialogues ---------- */
 
 dialog {
-  width: min(92vw, 380px);
+  width: min(92vw, 600px);
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
   padding: 1.5rem;
+  font-size: 1.05rem;
   border: none;
   border-radius: 14px;
   color: var(--ink);
@@ -254,6 +303,13 @@ dialog {
 }
 dialog::backdrop { background: rgba(6, 22, 26, 0.6); }
 dialog[open] { animation: rise 0.25s ease; }
+#dlg-win, #dlg-confirm { width: min(92vw, 400px); }
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0 2rem; }
+.menu-grid h2 { margin-top: 0 !important; }
+fieldset + fieldset { margin-top: 1rem; }
+fieldset label.block { display: flex; margin-right: 0; }
+input[type='checkbox'] { accent-color: var(--oxblood); width: 20px; height: 20px; }
+.confirm-msg { margin: 0; font-size: 1.15rem; font-weight: 600; }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
 
 dialog h2 {
@@ -294,6 +350,20 @@ input[type='radio'] { accent-color: var(--oxblood); width: 18px; height: 18px; }
 }
 .dlg-actions .primary { background: var(--oxblood); color: var(--ivory); border-color: var(--oxblood); }
 .dlg-actions .ghost { background: transparent; color: var(--ink); }
+
+/* Dialogues pivotés avec l'interface (doit rester APRÈS les règles dialog de base) */
+@media (orientation: portrait) and (pointer: coarse) {
+  dialog {
+    inset: 50% auto auto 50%;
+    margin: 0;
+    translate: -50% -50%;
+    rotate: 90deg;
+    width: min(calc(100dvh - 2rem), 600px);
+    max-width: none; /* le max-width UA (basé sur la largeur portrait) briderait la boîte */
+    max-height: calc(100dvw - 2rem);
+  }
+  #dlg-win, #dlg-confirm { width: min(calc(100dvh - 2rem), 400px); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .card, .inner { transition-duration: 0.01ms !important; }
